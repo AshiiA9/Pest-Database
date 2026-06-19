@@ -538,7 +538,7 @@ function chemicalRecommendations(pest){
   return data[pest] || ["No specific chemical recommendation added yet. Use source correction/IPM first, then verify the current label before applying any pesticide."];
 }
 
-const selected = { pest:null, location:null, frequency:null, severity:null };
+const selected = { pest:[], location:[], frequency:null, severity:null };
 
 function makeButtons(containerId, items, key){
   const el = document.getElementById(containerId);
