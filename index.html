@@ -277,8 +277,7 @@ const pestData = {
     ipm:["Clean grease and food debris","Fix leaks","Remove cardboard clutter","Use monitors to track activity","Improve storage and trash handling"],
     treatment:["Bait/IGR/crack-and-crevice strategy may fit by label","Avoid broad repellent sprays that scatter activity","Follow-up and monitoring are important"],
     follow:"Heavy infestations usually need multiple visits and customer cooperation."
-  },
-  "American Roaches":{
+  },  "American Roaches":{
     common:true, season:"Warm months; year-round in damp sites.",
     why:"Large roaches often originate from sewers, drains, crawlspaces, basements, boiler rooms, or damp exterior harborage.",
     inspect:["Floor drains","Crawlspace","Basement","Utility rooms","Exterior doors","Trash areas"],
@@ -512,8 +511,7 @@ function chemicalRecommendations(pest){
     "American Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior, crawlspace, door, and trash-area pressure.","Alpine WSG — useful for labeled crack/crevice or utility-area treatment.","Why: large roaches usually come from damp exterior, drain, crawlspace, or utility sources."],
     "Smokybrown Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior harborage, eaves, foundation, leaf litter edges, and entry points.","Why: smokybrown roaches are usually exterior/moisture driven and enter from outdoor harborages."],
     "Oriental Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled damp exterior entry, basement, garage, crawlspace, and foundation zones.","Alpine WSG — useful for labeled crack/crevice work in utility or damp harborage areas.","Why: oriental roaches are moisture-associated, so treatment must pair with drying and exclusion."],
-    "Wood Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior entry, porch, garage, and wooded-edge pressure.","Why: wood roaches are usually outdoor invaders, not indoor breeding roaches."],
-    "Paper Wasps":["Wasp/hornet spray — best for direct visible nest treatment where label allows.","Tri Dust — useful for labeled hidden nest/void entry treatment.","CrossCheck Plus / Bifen I/T — useful as labeled exterior residual after nest control.","Why: wasps require nest-focused treatment."],
+    "Wood Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior entry, porch, garage, and wooded-edge pressure.","Why: wood roaches are usually outdoor invaders, not indoor breeding roaches."],    "Paper Wasps":["Wasp/hornet spray — best for direct visible nest treatment where label allows.","Tri Dust — useful for labeled hidden nest/void entry treatment.","CrossCheck Plus / Bifen I/T — useful as labeled exterior residual after nest control.","Why: wasps require nest-focused treatment."],
     "Yellow Jackets":["Wasp/hornet spray or labeled nest product — use only when nest/entry is confirmed.","Tri Dust — useful for labeled ground, wall void, or structural nest entries.","Why: yellow jackets are colony/nest pests; do not seal active void nests until controlled."],
     "Bald-Faced Hornets":["Wasp/hornet spray — direct nest treatment where label and safety allow.","Professional nest removal after activity is controlled.","Why: bald-faced hornets are defensive nest pests, so treatment must be directed at the nest."],
     "European Hornets":["Wasp/hornet spray or labeled void treatment — use only after locating the active entry/nest.","Tri Dust — useful for labeled void nest entries.","Why: European hornets often nest in cavities/voids and may fly at night to lights."],
@@ -538,35 +536,57 @@ function chemicalRecommendations(pest){
   return data[pest] || ["No specific chemical recommendation added yet. Use source correction/IPM first, then verify the current label before applying any pesticide."];
 }
 
-const selected = { pest:null, location:null, frequency:null, severity:null };
+const selected = { pest:[], location:[], frequency:null, severity:null };
 
 function makeButtons(containerId, items, key){
   const el = document.getElementById(containerId);
   el.innerHTML = "";
+
   items.forEach(item=>{
     const btn = document.createElement("button");
     btn.textContent = item;
+
     btn.onclick = () => {
-      selected[key] = item;
-      [...el.children].forEach(b=>b.classList.remove("selected"));
-      btn.classList.add("selected");
+      if(key === "pest" || key === "location"){
+        if(selected[key].includes(item)){
+          selected[key] = selected[key].filter(v => v !== item);
+          btn.classList.remove("selected");
+        }else{
+          selected[key].push(item);
+          btn.classList.add("selected");
+        }
+      }else{
+        selected[key] = item;
+        [...el.children].forEach(b=>b.classList.remove("selected"));
+        btn.classList.add("selected");
+      }
+
       updateBadges();
     };
+
     el.appendChild(btn);
   });
 }
 
 function updateBadges(){
   const badges = [];
-  if(selected.pest) badges.push(`<span class="badge">${selected.pest}</span>`);
-  if(selected.location) badges.push(`<span class="badge">${selected.location}</span>`);
+
+  selected.pest.forEach(p=>{
+    badges.push(`<span class="badge">${p}</span>`);
+  });
+
+  selected.location.forEach(l=>{
+    badges.push(`<span class="badge">${l}</span>`);
+  });
+
   if(selected.frequency) badges.push(`<span class="badge">${selected.frequency}</span>`);
   if(selected.severity) badges.push(`<span class="badge">${selected.severity}</span>`);
+
   document.getElementById("summaryBadges").innerHTML = badges.join("");
 }
 
 function lineList(arr){
-  return arr.map(x => `• ${x}`).join("\\n");
+  return arr.map(x => `• ${x}`).join("\n");
 }
 
 function intensityNote(){
@@ -583,51 +603,64 @@ function intensityNote(){
 }
 
 function locationNote(){
-  const loc = selected.location || "";
-  if(["Kitchen","Restaurant/Commercial","Trash Area"].includes(loc)){
-    return "Food, grease, trash handling, and sanitation should be checked closely for this location.";
+  const locs = selected.location || [];
+
+  if(locs.some(l=>["Kitchen","Restaurant/Commercial","Trash Area"].includes(l))){
+    return "Food, grease, trash handling, and sanitation should be checked closely for the selected location(s).";
   }
-  if(["Bathroom","Laundry","Basement","Crawlspace","Utility Room"].includes(loc)){
-    return "Moisture, plumbing, drains, and humidity should be checked closely for this location.";
+  if(locs.some(l=>["Bathroom","Laundry","Basement","Crawlspace","Utility Room"].includes(l))){
+    return "Moisture, plumbing, drains, and humidity should be checked closely for the selected location(s).";
   }
-  if(["Exterior Foundation","Mulch Beds","Lawn","Trees","Deck","Porch","Siding","Eaves"].includes(loc)){
-    return "Exterior harborage, vegetation, gaps, nests, weather, lighting, and drainage should be checked closely for this location.";
+  if(locs.some(l=>["Exterior Foundation","Mulch Beds","Lawn","Trees","Deck","Porch","Siding","Eaves"].includes(l))){
+    return "Exterior harborage, vegetation, gaps, nests, weather, lighting, and drainage should be checked closely for the selected location(s).";
   }
-  if(["Attic","Garage"].includes(loc)){
-    return "Storage clutter, entry gaps, vents, droppings/webbing, and void access should be checked closely for this location.";
+  if(locs.some(l=>["Attic","Garage"].includes(l))){
+    return "Storage clutter, entry gaps, vents, droppings/webbing, and void access should be checked closely for the selected location(s).";
   }
+
   return "Inspect nearby entry points, food/water sources, and harborage.";
 }
 
 function generate(){
   const out = document.getElementById("output");
 
-  if(!selected.pest || !selected.location || !selected.frequency || !selected.severity){
-    out.textContent = "Select pest, location, frequency, and severity first.";
+  if(selected.pest.length === 0 || selected.location.length === 0 || !selected.frequency || !selected.severity){
+    out.textContent = "Select at least one pest, at least one location, frequency, and severity first.";
     return;
   }
 
-  const d = pestData[selected.pest];
-  if(!d){
-    out.textContent = "No database entry found for this pest yet.";
-    return;
-  }
-
-  const text =
+  let text =
 `PROBLEM SUMMARY
-Pest: ${selected.pest}
-Location: ${selected.location}
+Pests: ${selected.pest.join(", ")}
+Locations: ${selected.location.join(", ")}
 Frequency: ${selected.frequency}
 Severity: ${selected.severity}
+
+LOCATION / ACTIVITY NOTE
+${locationNote()}
+${intensityNote()}
+`;
+
+  selected.pest.forEach((pestName, index)=>{
+    const d = pestData[pestName];
+
+    if(!d){
+      text += `\n\nPEST ${index + 1}: ${pestName}\nNo database entry found for this pest yet.`;
+      return;
+    }
+
+    text +=
+`
+
+==============================
+PEST ${index + 1}: ${pestName}
+==============================
+
 East TN relevance: ${d.common ? "Common / relevant in this region" : "Possible, verify ID"}
 Typical season: ${d.season}
 
 WHY THEY MAY BE SEEING IT
 ${d.why}
-
-LOCATION / ACTIVITY NOTE
-${locationNote()}
-${intensityNote()}
 
 INSPECTION POINTS
 ${lineList(d.inspect)}
@@ -642,10 +675,15 @@ TREATMENT CONSIDERATIONS
 ${lineList(d.treatment)}
 
 RECOMMENDED CHEMICAL / INSECTICIDE OPTIONS
-${lineList(chemicalRecommendations(selected.pest))}
+${lineList(chemicalRecommendations(pestName))}
 
 FOLLOW-UP EXPECTATION
 ${d.follow}
+`;
+  });
+
+  text +=
+`
 
 LABEL IS THE LAW
 Verify the current label before applying any pesticide. Confirm pest, site, rate, PPE, application method, restrictions, and re-entry. This app is a field organization tool, not a substitute for the product label.`;
@@ -663,8 +701,8 @@ function copyResult(){
 }
 
 function resetAll(){
-  selected.pest = null;
-  selected.location = null;
+  selected.pest = [];
+  selected.location = [];
   selected.frequency = null;
   selected.severity = null;
   document.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
