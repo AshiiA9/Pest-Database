@@ -496,32 +496,50 @@ const pestData = {
   }
 };
 
-const selected = { pest:null, location:null, frequency:null, severity:null };
 function chemicalRecommendations(pest){
   const data = {
     "Odorous House Ants":["Alpine WSG — good for labeled crack/crevice or trail-area work because ants can contact and transfer it.","Ant bait — recommended when trails are active because workers can carry bait back toward the colony.","Taurus SC / fipronil — useful for labeled exterior foundation trails and entry points.","Why: ants are colony pests; bait/non-repellent style control is usually better than just killing visible ants."],
     "Pavement Ants":["Ant bait — useful when trails are consistent from slab cracks or pavement edges.","Alpine WSG — good for labeled crack/crevice or entry-point treatment.","Taurus SC / fipronil — useful for labeled exterior slab/foundation edges.","Why: they often nest under slabs, so source/entry treatment matters."],
     "Carpenter Ants":["Taurus SC / Termidor-style fipronil — strong fit for labeled exterior trails and structural entry points.","Alpine WSG — useful for labeled crack/crevice activity zones.","Tri Dust — useful only for labeled void/galleries when activity is confirmed.","Why: carpenter ants require nest/source targeting, not just spraying visible ants."],
     "Fire Ants":["Fire ant bait — preferred for colony-level control because workers carry bait into the mound.","CrossCheck Plus / Bifen I/T — useful for labeled mound, lawn, or perimeter contact treatment when faster knockdown is needed.","Why: bait targets the colony; contact treatment helps high-risk mounds."],
+    "Springtails":["No chemical-first recommendation. Moisture correction, drainage, mulch reduction, and source drying are the main fix.","Alpine WSG or labeled exterior source treatment may help only where activity and label allow.","Why: springtails are moisture indicators, so spraying without drying the source usually fails."],
+    "Millipedes":["CrossCheck Plus / Bifen I/T — useful for labeled exterior foundation, mulch bed, doorway, and migration-zone treatment.","Why: millipedes usually enter from damp exterior organic matter, so exterior source treatment plus moisture correction fits best."],
+    "Brown Marmorated Stink Bugs":["CrossCheck Plus / Bifen I/T — useful for labeled exterior preventive treatment around siding, windows, soffits, and entry points before fall entry.","Why: stink bugs overwinter in voids, so prevention/exclusion before entry matters most."],
+    "Asian Lady Beetles":["CrossCheck Plus / Bifen I/T — useful for labeled exterior preventive treatment around sunny walls, windows, siding gaps, and soffits before fall entry.","Why: they overwinter in structures; once inside voids, indoor chemical value is limited."],
+    "Boxelder Bugs":["CrossCheck Plus / Bifen I/T — useful for labeled exterior preventive treatment on entry points and sunny siding before fall entry.","Why: seasonal invaders are best controlled before they get into wall/attic voids."],
+    "Cluster Flies":["CrossCheck Plus / Bifen I/T — useful for labeled exterior preventive treatment around attic/soffit/window entry zones before fall entry.","Why: cluster flies overwinter in voids; after they emerge indoors, treatment is mostly cleanup/support."],
     "German Roaches":["Roach gel bait — main tool because roaches feed and share harborages.","Gentrol IGR — helps break reproduction/life cycle.","Alpine WSG — useful for labeled crack/crevice harborages.","Why: roaches need bait + IGR + sanitation, not broad repellent spraying."],
     "American Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior, crawlspace, door, and trash-area pressure.","Alpine WSG — useful for labeled crack/crevice or utility-area treatment.","Why: large roaches usually come from damp exterior, drain, crawlspace, or utility sources."],
-    "Mosquitoes":["In2Care stations with In2Mix — useful where station placement/service directions are followed.","Bifen I/T / CrossCheck Plus — useful for labeled shaded foliage, fence lines, and mosquito resting areas.","Bti larvicide — best for standing water that cannot be dumped.","Why: mosquito control needs source reduction, larvae control, and adult resting-site treatment."],
+    "Smokybrown Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior harborage, eaves, foundation, leaf litter edges, and entry points.","Why: smokybrown roaches are usually exterior/moisture driven and enter from outdoor harborages."],
+    "Oriental Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled damp exterior entry, basement, garage, crawlspace, and foundation zones.","Alpine WSG — useful for labeled crack/crevice work in utility or damp harborage areas.","Why: oriental roaches are moisture-associated, so treatment must pair with drying and exclusion."],
+    "Wood Roaches":["CrossCheck Plus / Bifen I/T — useful for labeled exterior entry, porch, garage, and wooded-edge pressure.","Why: wood roaches are usually outdoor invaders, not indoor breeding roaches."],
     "Paper Wasps":["Wasp/hornet spray — best for direct visible nest treatment where label allows.","Tri Dust — useful for labeled hidden nest/void entry treatment.","CrossCheck Plus / Bifen I/T — useful as labeled exterior residual after nest control.","Why: wasps require nest-focused treatment."],
     "Yellow Jackets":["Wasp/hornet spray or labeled nest product — use only when nest/entry is confirmed.","Tri Dust — useful for labeled ground, wall void, or structural nest entries.","Why: yellow jackets are colony/nest pests; do not seal active void nests until controlled."],
+    "Bald-Faced Hornets":["Wasp/hornet spray — direct nest treatment where label and safety allow.","Professional nest removal after activity is controlled.","Why: bald-faced hornets are defensive nest pests, so treatment must be directed at the nest."],
+    "European Hornets":["Wasp/hornet spray or labeled void treatment — use only after locating the active entry/nest.","Tri Dust — useful for labeled void nest entries.","Why: European hornets often nest in cavities/voids and may fly at night to lights."],
+    "Mud Daubers":["Usually no chemical is needed unless the nest is active in a sensitive area.","Remove inactive mud tubes and reduce spider prey/webbing.","Why: mud daubers are solitary and nest removal usually solves the concern."],
     "Carpenter Bees":["Tri Dust — useful for labeled gallery treatment.","CrossCheck Plus / Bifen I/T — useful for labeled exterior wood landing/boring zones.","Why: carpenter bees reuse wood galleries, so galleries and exposed wood need attention."],
     "House Spiders":["CrossCheck Plus / Bifen I/T — useful for labeled exterior perimeter, eaves, foundation, and harborage zones.","Tri Dust — useful for labeled cracks/voids.","Why: spider control works best with web removal and prey reduction."],
     "Wolf Spiders":["CrossCheck Plus / Bifen I/T — useful for labeled exterior entry points, garage doors, foundation, and mulch edges.","Why: they are ground hunters entering from outside gaps."],
     "Cellar Spiders":["Tri Dust — useful for labeled void/crack harborages.","CrossCheck Plus / Bifen I/T — useful for labeled perimeter/garage/basement entry work.","Why: web removal and prey reduction are key."],
     "Brown Recluse":["Glue monitors — important for confirming activity.","Tri Dust — useful for labeled cracks, voids, attics, crawlspaces, and storage harborages.","Alpine WSG — useful for labeled crack/crevice treatment.","Why: recluse control needs monitoring, clutter reduction, and targeted harborage treatment."],
     "Black Widow":["CrossCheck Plus / Bifen I/T — useful for labeled exterior harborages, meter boxes, garages, crawlspaces, and cluttered areas.","Tri Dust — useful for labeled cracks/voids.","Why: widows stay in protected harborages/web areas."],
+    "Earwigs":["CrossCheck Plus / Bifen I/T — useful for labeled exterior foundation, mulch bed, doorway, and damp harborage treatment.","Why: earwigs are moisture/harborage driven, so exterior source work and drying are key."],
+    "Silverfish":["Tri Dust — useful for labeled void/crack treatment in dry protected harborages.","Alpine WSG — useful for labeled crack/crevice work in humid harborage areas.","Why: silverfish favor humidity and paper/clutter, so moisture and storage correction matter."],
     "Fleas":["Gentrol IGR — helps break the flea life cycle.","Labeled adulticide — useful for carpets, pet resting areas, crawlspaces, or shaded exterior areas where label allows.","Why: fleas require pet treatment, vacuuming, IGR, and follow-up."],
     "Ticks":["CrossCheck Plus / Bifen I/T — useful for labeled yard edges, tall grass, fence lines, and wooded transition zones.","Why: ticks are tied to vegetation, wildlife paths, and pet areas."],
+    "Mosquitoes":["In2Care stations with In2Mix — useful where station placement/service directions are followed.","Bifen I/T / CrossCheck Plus — useful for labeled shaded foliage, fence lines, and mosquito resting areas.","Bti larvicide — best for standing water that cannot be dumped.","Why: mosquito control needs source reduction, larvae control, and adult resting-site treatment."],
+    "Drain Flies":["No chemical-first recommendation. Drain sanitation and organic slime removal are the main fix.","Why: drain flies breed in buildup; pesticide alone usually will not solve the source."],
+    "Fruit Flies":["No chemical-first recommendation. Remove fermenting produce, trash, recycling residue, wet organic debris, and breeding sources.","Why: fruit flies return quickly if the breeding material remains."],
     "Rodents / Mice":["Final Bait Blox in tamper-resistant bait stations — useful where label allows and bait can be secured.","T-Rex snap traps — useful for quick reduction and monitoring.","Sticky traps — only where allowed by company policy/site conditions.","Why: rodents require exclusion, sanitation, trapping/baiting, and follow-up."],
     "Rats":["Final Bait Blox in secured bait stations — useful where label allows.","Snap traps — useful where bait is not ideal or fast confirmation is needed.","Why: rats need sanitation, burrow/entry correction, exclusion, and secured baiting."]
   };
 
   return data[pest] || ["No specific chemical recommendation added yet. Use source correction/IPM first, then verify the current label before applying any pesticide."];
 }
+
+const selected = { pest:null, location:null, frequency:null, severity:null };
+
 function makeButtons(containerId, items, key){
   const el = document.getElementById(containerId);
   el.innerHTML = "";
@@ -622,6 +640,9 @@ ${lineList(d.ipm)}
 
 TREATMENT CONSIDERATIONS
 ${lineList(d.treatment)}
+
+RECOMMENDED CHEMICAL / INSECTICIDE OPTIONS
+${lineList(chemicalRecommendations(selected.pest))}
 
 FOLLOW-UP EXPECTATION
 ${d.follow}
