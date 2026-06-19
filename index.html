@@ -538,16 +538,44 @@ function chemicalRecommendations(pest){
   return data[pest] || ["No specific chemical recommendation added yet. Use source correction/IPM first, then verify the current label before applying any pesticide."];
 }
 
-const selected = { pest:null, location:null, frequency:null, severity:null };
+const selected = { pest:[], location:[], frequency:null, severity:null };
 
-function makeButtons(containerId, items, key){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  items.forEach(item=>{
-    const btn = document.createElement("button");
-    btn.textContent = item;
-    btn.onclick = () => {
-      selected[key] = item;
+
+btn.onclick = () => {
+
+  // MULTI-SELECT FOR PESTS AND LOCATIONS
+  if(key === "pest" || key === "location"){
+
+    const arr = selected[key];
+
+    if(arr.includes(item)){
+      selected[key] = arr.filter(v => v !== item);
+      btn.classList.remove("selected");
+    }else{
+      selected[key].push(item);
+      btn.classList.add("selected");
+    }
+
+  }
+
+  // SINGLE SELECT FOR FREQUENCY & SEVERITY
+  else{
+
+    selected[key] = item;
+
+    [...el.children].forEach(b=>{
+      b.classList.remove("selected");
+    });
+
+    btn.classList.add("selected");
+  }
+
+  updateBadges();
+};
+
+el.appendChild(btn);
+
+
       [...el.children].forEach(b=>b.classList.remove("selected"));
       btn.classList.add("selected");
       updateBadges();
@@ -557,12 +585,27 @@ function makeButtons(containerId, items, key){
 }
 
 function updateBadges(){
+
   const badges = [];
-  if(selected.pest) badges.push(`<span class="badge">${selected.pest}</span>`);
-  if(selected.location) badges.push(`<span class="badge">${selected.location}</span>`);
-  if(selected.frequency) badges.push(`<span class="badge">${selected.frequency}</span>`);
-  if(selected.severity) badges.push(`<span class="badge">${selected.severity}</span>`);
+
+  selected.pest.forEach(p=>{
+    badges.push(`<span class="badge">${p}</span>`);
+  });
+
+  selected.location.forEach(l=>{
+    badges.push(`<span class="badge">${l}</span>`);
+  });
+
+  if(selected.frequency){
+    badges.push(`<span class="badge">${selected.frequency}</span>`);
+  }
+
+  if(selected.severity){
+    badges.push(`<span class="badge">${selected.severity}</span>`);
+  }
+
   document.getElementById("summaryBadges").innerHTML = badges.join("");
+}
 }
 
 function lineList(arr){
@@ -602,10 +645,72 @@ function locationNote(){
 function generate(){
   const out = document.getElementById("output");
 
-  if(!selected.pest || !selected.location || !selected.frequency || !selected.severity){
-    out.textContent = "Select pest, location, frequency, and severity first.";
+  if(selected.pest.length === 0 || selected.location.length === 0 || !selected.frequency || !selected.severity){
+    out.textContent = "Select at least one pest, at least one location, frequency, and severity first.";
     return;
   }
+
+  let text =
+`PROBLEM SUMMARY
+Pests: ${selected.pest.join(", ")}
+Locations: ${selected.location.join(", ")}
+Frequency: ${selected.frequency}
+Severity: ${selected.severity}
+
+LOCATION / ACTIVITY NOTE
+${locationNote()}
+${intensityNote()}
+`;
+
+  selected.pest.forEach((pestName, index)=>{
+    const d = pestData[pestName];
+
+    if(!d){
+      text += `\n\n==============================\n${pestName}\nNo database entry found for this pest yet.`;
+      return;
+    }
+
+    text +=
+`
+
+==============================
+PEST ${index + 1}: ${pestName}
+==============================
+
+East TN relevance: ${d.common ? "Common / relevant in this region" : "Possible, verify ID"}
+Typical season: ${d.season}
+
+WHY THEY MAY BE SEEING IT
+${d.why}
+
+INSPECTION POINTS
+${lineList(d.inspect)}
+
+CONDUCIVE CONDITIONS
+${lineList(d.conditions)}
+
+NON-CHEMICAL / IPM RECOMMENDATIONS
+${lineList(d.ipm)}
+
+TREATMENT CONSIDERATIONS
+${lineList(d.treatment)}
+
+RECOMMENDED CHEMICAL / INSECTICIDE OPTIONS
+${lineList(chemicalRecommendations(pestName))}
+
+FOLLOW-UP EXPECTATION
+${d.follow}
+`;
+  });
+
+  text +=
+`
+
+LABEL IS THE LAW
+Verify the current label before applying any pesticide. Confirm pest, site, rate, PPE, application method, restrictions, and re-entry. This app is a field organization tool, not a substitute for the product label.`;
+
+  out.textContent = text;
+}
 
   const d = pestData[selected.pest];
   if(!d){
