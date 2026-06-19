@@ -1,114 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>TN Pest Tech Assistant</title>
 <style>
 :root{
   --blue:#0ea5e9;
   --pink:#ec4aa5;
-  --purple:#7c3aed;
   --dark:#111827;
   --muted:#6b7280;
-  --bg:#eef6ff;
+  --bg:#eef3f8;
   --card:#ffffff;
-  --border:#dbeafe;
-  --good:#16a34a;
-  --warn:#f59e0b;
+  --border:#dbe3ef;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--dark);
 }
 .header{
-  padding:24px 16px;
+  background:linear-gradient(90deg,var(--blue),var(--pink));
   color:white;
-  background:linear-gradient(120deg,var(--blue),var(--pink));
+  padding:28px 18px;
 }
-.header h1{margin:0;font-size:24px}
-.header p{margin:8px 0 0;font-size:14px;opacity:.95}
-.wrap{max-width:980px;margin:0 auto;padding:14px}
+.header h1{margin:0;font-size:26px}
+.header p{margin:8px 0 0;opacity:.95}
+.wrap{max-width:900px;margin:auto;padding:16px}
 .card{
   background:var(--card);
   border:1px solid var(--border);
   border-radius:18px;
-  padding:14px;
-  margin:12px 0;
-  box-shadow:0 6px 18px rgba(15,23,42,.06);
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
-h2{font-size:18px;margin:0 0 10px}
-h3{font-size:16px;margin:14px 0 8px}
+h2{font-size:18px;margin:0 0 12px}
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
-  gap:8px;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 button{
+  width:100%;
   border:1px solid var(--border);
-  background:#f8fbff;
-  padding:12px 10px;
-  border-radius:14px;
-  font-size:14px;
-  font-weight:700;
+  background:white;
   color:var(--dark);
+  border-radius:14px;
+  padding:13px 10px;
+  font-size:15px;
+  font-weight:650;
   cursor:pointer;
-  touch-action:manipulation;
-  -webkit-tap-highlight-color:transparent;
 }
 button.selected{
-  color:white;
-  border-color:transparent;
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-}
-.bigBtn{
-  width:100%;
-  margin-top:12px;
-  font-size:17px;
-  padding:15px;
-  color:white;
-  border:none;
   background:linear-gradient(135deg,var(--blue),var(--pink));
-}
-.copyBtn{
-  background:var(--dark);
   color:white;
   border:none;
 }
-.resetBtn{
-  background:#fff7ed;
-  border-color:#fed7aa;
+.action{
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+  color:white;
+  border:none;
+  margin-top:10px;
+}
+.secondary{
+  background:#f8fafc;
 }
 .output{
   white-space:pre-wrap;
-  line-height:1.45;
-  font-size:15px;
-  background:#f8fbff;
-  border:1px dashed #bae6fd;
+  background:#f8fafc;
+  border:1px solid var(--border);
   border-radius:14px;
-  padding:12px;
+  padding:14px;
+  line-height:1.45;
+  min-height:120px;
+}
+.small{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
 }
 .badge{
   display:inline-block;
-  padding:4px 8px;
-  border-radius:999px;
   background:#e0f2fe;
   color:#075985;
+  border-radius:999px;
+  padding:4px 9px;
   font-size:12px;
-  font-weight:800;
   margin:2px;
 }
-.notice{
-  border-left:5px solid var(--warn);
-  background:#fffbeb;
-  padding:10px;
-  border-radius:12px;
-  font-size:14px;
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}
 }
-.small{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -120,521 +105,321 @@ button.selected{
 
 <div class="wrap">
 
-  <div class="card notice">
-    <b>LABEL IS THE LAW:</b> This app gives general IPM and treatment considerations only. Always verify current product label for pest, site, rate, PPE, application method, restrictions, and re-entry before applying.
+  <div class="card">
+    <p class="small"><b>LABEL IS THE LAW:</b> This app gives general IPM and treatment considerations only. Always verify the current product label for pest, site, rate, PPE, application method, restrictions, re-entry, water setbacks, pollinator precautions, and state requirements before applying.</p>
   </div>
 
   <div class="card">
     <h2>1. Select Pest</h2>
-    <div id="pestButtons" class="grid"></div>
+    <div class="grid" id="pestButtons"></div>
   </div>
 
   <div class="card">
     <h2>2. Select Location</h2>
-    <div id="locationButtons" class="grid"></div>
+    <div class="grid" id="locationButtons"></div>
   </div>
 
   <div class="card">
     <h2>3. Select Frequency</h2>
-    <div id="frequencyButtons" class="grid"></div>
+    <div class="grid" id="frequencyButtons"></div>
   </div>
 
   <div class="card">
     <h2>4. Select Severity</h2>
-    <div id="severityButtons" class="grid"></div>
-    <button class="bigBtn" onclick="generate()">Generate Recommendation</button>
+    <div class="grid" id="severityButtons"></div>
+    <button class="action" onclick="generateRecommendation()">Generate Recommendation</button>
   </div>
 
   <div class="card">
     <h2>Recommendation</h2>
-    <div id="summaryBadges"></div>
-    <div id="output" class="output">Select options above, then tap Generate Recommendation.</div>
-    <button class="bigBtn copyBtn" onclick="copyResult()">Copy Recommendation</button>
-    <button class="bigBtn resetBtn" onclick="resetAll()">Reset</button>
+    <div class="output" id="output">Select options above, then tap Generate Recommendation.</div>
+    <div class="grid" style="margin-top:10px">
+      <button class="secondary" onclick="copyRecommendation()">Copy Recommendation</button>
+      <button class="secondary" onclick="resetAll()">Reset</button>
+    </div>
   </div>
 
   <div class="card">
-    <h2>Products On Truck / Future Label Integration</h2>
-    <div id="productList"></div>
-    <p class="small">Product-specific rates and sites are intentionally not included until labels are added and verified.</p>
+    <h2>Products On Truck / Integrated</h2>
+    <span class="badge">Alpine WSG</span>
+    <span class="badge">CrossCheck Plus</span>
+    <span class="badge">Bifen XTS / Bifenthrin</span>
+    <span class="badge">Taurus SC / Fipronil</span>
+    <span class="badge">Termidor SC / HE</span>
+    <span class="badge">Trelona ATBS</span>
+    <span class="badge">CrossFire</span>
+    <span class="badge">Gentrol IGR</span>
+    <span class="badge">Tri-Die / Tri-Dust</span>
+    <span class="badge">Niban Granules</span>
+    <span class="badge">In2Care / In2Mix</span>
+    <span class="badge">Rodent Stations</span>
+    <span class="badge">Final Bait Blox</span>
+    <span class="badge">Sticky Traps</span>
+    <span class="badge">T-Rex Snap Traps</span>
+    <span class="badge">Wasp & Hornet Spray</span>
   </div>
 
 </div>
 
 <script>
-const productsOnTruck = [
-  "Alpine WSG","CrossCheck Plus","Taurus SC","Bifen I/T","Cyzmic","Gentrol","Niban",
-  "Termidor SC","Termidor HE","Trelona ATBS","Final Bait Blox","Rodent bait stations",
-  "In2Care mosquito stations","In2Mix packets","CrossFire","Tri Dust",
-  "Mouse sticky traps","T-Rex snap traps","Wasp/hornet spray"
-];
-
-const locations = [
-  "Kitchen","Bathroom","Laundry","Bedroom","Living Room","Basement","Crawlspace","Attic",
-  "Garage","Exterior Foundation","Deck","Porch","Siding","Eaves","Lawn","Trees","Mulch Beds",
-  "Trash Area","Pet Area","Restaurant/Commercial","Utility Room"
-];
-
-const frequencies = ["Occasional","Weekly","Several Times Weekly","Daily","Heavy Activity"];
-const severities = ["Light","Moderate","Heavy"];
-
-const pestData = {
-  "Odorous House Ants":{
-    common:true, season:"Spring through fall; often worse after rain or food access.",
-    why:"Small trailing ants usually enter for sweets, grease, moisture, or shelter. Colonies can trail from exterior nests into kitchens, bathrooms, and wall voids.",
-    inspect:["Kitchen counters/cabinets","Sinks and plumbing gaps","Window/door frames","Exterior foundation trails","Mulch/leaf litter near structure"],
-    conditions:["Food residue","Moisture","Unsealed utility penetrations","Mulch or debris touching foundation"],
-    ipm:["Clean food residue and sticky spills","Store food in sealed containers","Seal pipe gaps and exterior entry points","Reduce mulch depth against foundation","Trace trails back to source before treating"],
-    treatment:["Use bait-style thinking when trails are active and species fits","Consider exterior source treatment if trails originate outside","Avoid repellent sprays directly on active bait trails if baiting is used"],
-    follow:"Expect activity to change as trails are disrupted; source correction is usually key."
-  },
-  "Pavement Ants":{
-    common:true, season:"Spring through fall.",
-    why:"Often nest under slabs, sidewalks, driveways, patios, and foundation edges, then enter through cracks.",
-    inspect:["Slab cracks","Garage expansion joints","Driveway/walkway edges","Baseboards near exterior walls","Foundation weep/utility gaps"],
-    conditions:["Cracks in concrete","Food crumbs","Soil-to-structure contact","Moisture near slab"],
-    ipm:["Seal cracks where practical","Remove food sources","Improve drainage near slabs","Keep vegetation and debris away from foundation"],
-    treatment:["Target cracks/entry points where label permits","Exterior perimeter/source treatment may fit if trailing is found","Bait can help when trails are consistent"],
-    follow:"May require locating multiple slab or exterior nesting points."
-  },
-  "Carpenter Ants":{
-    common:true, season:"Spring through fall; swarmers possible.",
-    why:"Carpenter ants are usually tied to moisture-damaged wood, voids, trees, stumps, or structural gaps. Finding the nest/source matters more than just spraying visible ants.",
-    inspect:["Moist wood","Window/door frames","Crawlspace sill plates","Deck ledger boards","Tree limbs touching roof","Stumps/firewood"],
-    conditions:["Water leaks","Rotting wood","Firewood near structure","Tree contact","Foam/void harborage"],
-    ipm:["Correct moisture leaks","Replace damaged wood","Move firewood away from house","Trim limbs off roof/siding","Seal entry points after activity is addressed"],
-    treatment:["Target nest/void/source when found and label allows","Exterior trail and entry-point treatment may fit","Dust/void treatment may be considered only where label allows"],
-    follow:"If source remains, ants may continue. Inspection and moisture correction are critical."
-  },
-  "Fire Ants":{
-    common:true, season:"Warm months; mound activity after rain.",
-    why:"Mounds occur in sunny turf, landscape beds, edges, and disturbed soil. Stings are the main customer concern.",
-    inspect:["Sunny lawn areas","Landscape beds","Utility boxes","Fence lines","Play/pet areas"],
-    conditions:["Open sunny turf","Disturbed soil","Warm wet weather","Irrigated lawns"],
-    ipm:["Flag and avoid active mounds","Reduce disturbance near mounds","Educate customer on sting risk","Monitor high-use lawn zones"],
-    treatment:["Bait or mound treatment may fit depending on label and site","Treat high-risk mounds where people/pets are exposed","Avoid disturbing mounds before bait-style approaches"],
-    follow:"New mounds can appear after weather changes; follow-up may be needed."
-  },
-  "Springtails":{
-    common:true, season:"Wet periods; often after rain.",
-    why:"Springtails are moisture indicators. Heavy indoor activity usually means damp soil, mulch, crawlspace, basement, plumbing, or drainage issues.",
-    inspect:["Basement walls","Bathrooms","Crawlspace vents","Foundation cracks","Mulch beds","Door thresholds"],
-    conditions:["Excess moisture","Wet mulch","Poor drainage","Leaky plumbing","Organic debris"],
-    ipm:["Correct moisture source","Improve drainage","Reduce mulch against foundation","Run dehumidifier where needed","Seal entry gaps after moisture is addressed"],
-    treatment:["Exterior source treatment may help where label permits","Interior spot/crack treatment is secondary to moisture correction","Focus on source zones, not random open areas"],
-    follow:"Activity often drops only after moisture dries out."
-  },
-  "Millipedes":{
-    common:true, season:"Wet periods and seasonal migrations.",
-    why:"Millipedes live in damp organic matter and enter structures when moisture, mulch, leaf litter, or weather changes push them inside.",
-    inspect:["Garage doors","Basement entries","Mulch beds","Leaf litter","Crawlspace vents","Foundation cracks"],
-    conditions:["Wet mulch","Leaf litter","Poor drainage","Door gaps","Moist crawlspaces"],
-    ipm:["Remove leaf litter","Reduce mulch depth","Improve drainage","Seal door sweeps and gaps","Dry damp crawlspaces/basements"],
-    treatment:["Exterior perimeter/source treatment may fit when migration is active","Interior treatment alone rarely solves moisture-source issues"],
-    follow:"Dead/dying millipedes indoors are common after migrations; moisture control is key."
-  },
-  "Brown Marmorated Stink Bugs":{
-    common:true, season:"Fall invasion; winter/spring indoor sightings.",
-    why:"They enter structures in fall to overwinter and later show up indoors when warmed by sun or heat.",
-    inspect:["Attic vents","Soffits","Siding gaps","Window frames","Door frames","Chimney/utility openings"],
-    conditions:["Unsealed exterior gaps","South/west sun exposure","Damaged screens","Open vents"],
-    ipm:["Seal exterior gaps before fall","Repair screens","Use vacuum removal indoors","Avoid crushing indoors due to odor","Reduce entry points around attic/soffit areas"],
-    treatment:["Exterior preventive treatment timing matters before entry where label permits","Indoor pesticide use is usually limited value once they are overwintering in voids"],
-    follow:"Expect delayed indoor sightings after fall entry; exclusion is the long-term fix."
-  },
-  "Asian Lady Beetles":{
-    common:true, season:"Fall invasion; winter/spring indoor sightings.",
-    why:"Overwintering beetles gather on sunny exterior walls and enter through gaps.",
-    inspect:["Attic/soffit gaps","Window frames","Siding cracks","Door seals","Wall void entry points"],
-    conditions:["Exterior gaps","Sun-warmed walls","Poor screens/weatherstripping"],
-    ipm:["Seal gaps before fall","Repair screens","Vacuum indoor beetles","Install/repair door sweeps"],
-    treatment:["Preventive exterior treatment may fit before fall entry where label permits","Indoor void activity is hard to correct after entry"],
-    follow:"Best results come from fall prevention and exclusion."
-  },
-  "Boxelder Bugs":{
-    common:true, season:"Fall invasion; warm winter/spring indoor sightings.",
-    why:"They gather on warm sunny walls and enter structures to overwinter, especially near boxelder/maple hosts.",
-    inspect:["Sunny siding","Window/door gaps","Attic vents","Host trees nearby","Foundation cracks"],
-    conditions:["Host trees","Sun-warmed siding","Exterior cracks","Damaged screens"],
-    ipm:["Seal entry points","Vacuum indoor bugs","Repair screens","Reduce exterior gaps before fall"],
-    treatment:["Preventive exterior treatment may fit before entry where label permits","Indoor treatments are limited after overwintering"],
-    follow:"Seasonal nuisance; prevention timing matters."
-  },
-  "Cluster Flies":{
-    common:true, season:"Fall/winter/spring indoor nuisance.",
-    why:"They overwinter in wall voids/attics and emerge indoors on warm days.",
-    inspect:["Attics","Window frames","Soffits","Wall void access","Sunny upstairs rooms"],
-    conditions:["Unsealed attic gaps","Warm sunny walls","Damaged screens"],
-    ipm:["Seal attic/soffit gaps","Repair screens","Vacuum indoor flies","Improve exclusion before fall"],
-    treatment:["Exterior preventive treatment before entry may fit where label permits","Indoor treatment after emergence is mostly cleanup/supportive"],
-    follow:"May continue emerging from voids until overwintering population is exhausted."
-  },
-  "German Roaches":{
-    common:true, season:"Year-round indoors.",
-    why:"German roaches are strongly tied to food, water, warmth, clutter, and harborage. They usually require inspection, sanitation, monitoring, and targeted control.",
-    inspect:["Behind fridge","Under/behind stove","Dishwasher motor area","Sink cabinet","Cabinet hinges","Cracks near food prep"],
-    conditions:["Food grease","Water leaks","Cardboard/clutter","Warm appliances","Poor sanitation"],
-    ipm:["Clean grease and food debris","Fix leaks","Remove cardboard clutter","Use monitors to track activity","Improve storage and trash handling"],
-    treatment:["Bait/IGR/crack-and-crevice strategy may fit by label","Avoid broad repellent sprays that scatter activity","Follow-up and monitoring are important"],
-    follow:"Heavy infestations usually need multiple visits and customer cooperation."
-  },
-  "American Roaches":{
-    common:true, season:"Warm months; year-round in damp sites.",
-    why:"Large roaches often originate from sewers, drains, crawlspaces, basements, boiler rooms, or damp exterior harborage.",
-    inspect:["Floor drains","Crawlspace","Basement","Utility rooms","Exterior doors","Trash areas"],
-    conditions:["Moisture","Organic buildup in drains","Door gaps","Leaf litter","Trash/food waste"],
-    ipm:["Seal door gaps","Reduce moisture","Clean drains/trash areas","Remove leaf litter","Screen vents"],
-    treatment:["Exterior/perimeter or harborage treatment may fit where label permits","Drain/source work matters more than treating random sightings"],
-    follow:"Finding the source reduces callbacks."
-  },
-  "Smokybrown Roaches":{
-    common:true, season:"Warm humid months.",
-    why:"Often live outside in leaf litter, gutters, tree holes, and damp exterior areas, then enter around lights, eaves, and gaps.",
-    inspect:["Gutters","Eaves","Attic vents","Leaf litter","Wood piles","Exterior lights"],
-    conditions:["Moist leaf litter","Clogged gutters","Tree/roof contact","Exterior lighting","Open vents"],
-    ipm:["Clean gutters","Remove leaf litter","Trim limbs off roof","Reduce light attraction where possible","Seal attic/eave gaps"],
-    treatment:["Exterior harborage/perimeter treatment may fit where label permits","Attic/eave entry points should be inspected"],
-    follow:"Outdoor source reduction is important."
-  },
-  "Oriental Roaches":{
-    common:true, season:"Cool damp areas; warm months outside.",
-    why:"Often associated with damp basements, crawlspaces, drains, and ground-level entries.",
-    inspect:["Basement floor edges","Crawlspace","Floor drains","Garage","Door thresholds","Utility penetrations"],
-    conditions:["Dampness","Leaky plumbing","Debris","Ground-level gaps"],
-    ipm:["Dry damp areas","Repair leaks","Seal low entry points","Clean drains/debris","Improve ventilation"],
-    treatment:["Target damp harborages and entry points where label permits","Exterior source treatment may fit"],
-    follow:"Moisture correction is key."
-  },
-  "Wood Roaches":{
-    common:true, season:"Spring/summer; often after lights/firewood.",
-    why:"Outdoor roaches may wander indoors from wood piles, leaf litter, or lighting attraction; they usually do not establish like German roaches.",
-    inspect:["Firewood","Porch lights","Door gaps","Wooded edges","Garage entries"],
-    conditions:["Firewood near house","Exterior lights","Open doors/windows","Wooded lots"],
-    ipm:["Move firewood away","Reduce night lighting near doors","Seal gaps","Keep doors closed/screens repaired"],
-    treatment:["Exterior perimeter/entry treatment may fit where label permits","Interior infestation-style treatment usually not needed"],
-    follow:"Usually occasional invaders, not kitchen breeders."
-  },
-  "Paper Wasps":{
-    common:true, season:"Spring through fall.",
-    why:"Paper wasps build open-comb nests under eaves, decks, porch ceilings, grills, playsets, and sheltered exterior areas.",
-    inspect:["Eaves","Porch ceilings","Deck rails","Window shutters","Grills","Sheds"],
-    conditions:["Protected nesting spots","Low disturbance areas","Open exterior access"],
-    ipm:["Remove old inactive nests","Seal access to voids","Educate customer to avoid active nests","Monitor eaves and decks during season"],
-    treatment:["Direct nest treatment/removal may fit where label permits","Treat when activity is lower and safety allows"],
-    follow:"New nests can appear during the season."
-  },
-  "Yellow Jackets":{
-    common:true, season:"Summer/fall; aggressive around food and nests.",
-    why:"Yellow jackets often nest in ground cavities, wall voids, landscape timbers, or structural gaps and become more noticeable around food/trash in late season.",
-    inspect:["Ground holes","Retaining walls","Landscape timbers","Wall void entry points","Trash/patio food areas"],
-    conditions:["Nest cavity access","Food/trash attractants","Sweet/protein sources","Unsealed wall gaps"],
-    ipm:["Locate nest before treatment","Keep people away from nest area","Secure trash/food sources","Do not seal an active wall-void nest until controlled"],
-    treatment:["Nest-directed treatment may fit where label permits","Wall void nests may require professional caution to avoid indoor breakthrough"],
-    follow:"Activity can remain for a short period; safety and nest location are priority."
-  },
-  "Bald-Faced Hornets":{
-    common:true, season:"Summer/fall.",
-    why:"They build aerial paper nests in trees, shrubs, eaves, or structures and can be defensive near nests.",
-    inspect:["Trees/shrubs","Eaves","Utility poles","Porch areas","High exterior corners"],
-    conditions:["Protected nest support","Low disturbance until nest grows"],
-    ipm:["Confirm active nest from safe distance","Keep people/pets away","Remove inactive old nests after season if needed"],
-    treatment:["Nest-directed treatment/removal may fit where label permits and safety allows","High nests may require equipment/extra caution"],
-    follow:"Nest will not be reused next year, but new nests can form elsewhere."
-  },
-  "European Hornets":{
-    common:true, season:"Summer/fall; may fly at night to lights.",
-    why:"European hornets often nest in hollow trees, wall voids, attics, or cavities and may be attracted to lights.",
-    inspect:["Tree cavities","Attic/soffit entries","Wall void openings","Exterior lights","Damaged wood/voids"],
-    conditions:["Cavities","Light attraction","Open void access"],
-    ipm:["Locate nest entry","Reduce light attraction if possible","Avoid blocking active void entrance before control"],
-    treatment:["Nest/void-directed treatment may fit where label permits","Use caution because they can be active at night"],
-    follow:"Void nests may need follow-up and entry sealing after activity ends."
-  },
-  "Mud Daubers":{
-    common:true, season:"Warm months.",
-    why:"Solitary wasps build mud tubes on porches, eaves, garages, and sheltered walls; they are usually less aggressive than social wasps.",
-    inspect:["Porch ceilings","Garage walls","Eaves","Attic vents","Storage areas"],
-    conditions:["Mud source","Sheltered walls/ceilings","Spider prey nearby"],
-    ipm:["Knock down inactive mud nests","Reduce spider/web activity","Seal sheltered gaps where practical"],
-    treatment:["Direct treatment often unnecessary unless active/sensitive area","Treat active nests only where label permits and need exists"],
-    follow:"Mostly nuisance/cosmetic; nest removal helps customer perception."
-  },
-  "Carpenter Bees":{
-    common:true, season:"Spring activity; wood damage over time.",
-    why:"They bore into exposed/weathered wood such as fascia, decks, railings, and trim. Males hover but cannot sting; females can sting but are less aggressive.",
-    inspect:["Fascia boards","Deck rails","Bare/soft wood","Porch ceilings","Log/wood siding","Old galleries"],
-    conditions:["Unpainted/weathered wood","Existing galleries","Protected wood edges"],
-    ipm:["Paint or seal exposed wood","Fill inactive galleries after activity ends","Replace damaged wood","Use physical repairs to prevent reuse"],
-    treatment:["Gallery/wood treatment may fit where label permits","Dust/void-style treatment may be considered for active galleries by label"],
-    follow:"Wood sealing/painting is the long-term prevention."
-  },
-  "House Spiders":{
-    common:true, season:"Year-round; more visible when prey is present.",
-    why:"Spiders follow insects and harborage. Indoor activity often means web sites, clutter, gaps, or prey insects.",
-    inspect:["Corners","Window frames","Basement/garage","Storage areas","Exterior lights","Door thresholds"],
-    conditions:["Insect prey","Clutter","Exterior lights","Open gaps","Undisturbed corners"],
-    ipm:["Remove webs","Reduce clutter","Seal gaps","Reduce exterior light attraction","Control prey insects"],
-    treatment:["Crack/crevice or exterior perimeter treatment may fit where label permits","Web removal improves results"],
-    follow:"Spider control improves when prey and webs are reduced."
-  },
-  "Wolf Spiders":{
-    common:true, season:"Warm months; occasional indoor invaders.",
-    why:"Ground-hunting spiders enter from exterior gaps, garages, basements, and doors while following prey.",
-    inspect:["Garage doors","Basement entries","Door sweeps","Crawlspace","Mulch/leaf litter","Exterior foundation"],
-    conditions:["Door gaps","Ground clutter","Prey insects","Mulch/leaf litter"],
-    ipm:["Improve door sweeps","Reduce clutter near foundation","Remove leaf litter","Seal gaps","Reduce prey insects"],
-    treatment:["Exterior perimeter/entry-point treatment may fit where label permits","Indoor random spraying is less useful than exclusion"],
-    follow:"Expect occasional invaders if doors/gaps remain."
-  },
-  "Cellar Spiders":{
-    common:true, season:"Year-round in damp/quiet areas.",
-    why:"Common in basements, crawlspaces, garages, and corners where webs are undisturbed.",
-    inspect:["Basement ceiling corners","Crawlspace","Garage corners","Utility areas"],
-    conditions:["Undisturbed webs","Moist/quiet areas","Prey insects"],
-    ipm:["Remove webs regularly","Reduce clutter","Improve ventilation/moisture","Control prey insects"],
-    treatment:["Crack/crevice treatment may fit where label permits after web removal","Moisture/prey reduction helps"],
-    follow:"Web removal is a major part of control."
-  },
-  "Brown Recluse":{
-    common:true, season:"Year-round; more concerning in storage/voids.",
-    why:"Brown recluse favor undisturbed storage, clutter, cardboard, closets, attics, and crawlspaces. Identification matters because many spiders are misidentified.",
-    inspect:["Cardboard boxes","Closets","Attics","Crawlspaces","Stored shoes/clothes","Glue monitors"],
-    conditions:["Clutter","Cardboard","Undisturbed storage","Gaps/voids"],
-    ipm:["Reduce clutter/cardboard","Use sticky monitors","Store items in sealed bins","Shake out shoes/clothing","Seal gaps"],
-    treatment:["Targeted crack/void treatment may fit where label permits","Monitoring helps confirm activity and treatment zones"],
-    follow:"Reduction can take time; sanitation/clutter reduction is important."
-  },
-  "Black Widow":{
-    common:true, season:"Warm months; protected outdoor sites.",
-    why:"Widows often occupy dark protected outdoor areas, crawlspaces, garages, meters, wood piles, and cluttered sites.",
-    inspect:["Meter boxes","Crawlspace","Garage corners","Wood piles","Patio furniture","Sheds"],
-    conditions:["Dark harborage","Clutter","Insect prey","Undisturbed areas"],
-    ipm:["Wear gloves when moving items","Remove clutter/webs carefully","Move wood/debris away","Seal entry points"],
-    treatment:["Targeted treatment of harborage/web areas may fit where label permits","Web removal and safety precautions are important"],
-    follow:"Monitor protected areas where webs can rebuild."
-  },
-  "Earwigs":{
-    common:true, season:"Wet/warm periods.",
-    why:"Earwigs like damp mulch, leaf litter, ground cover, and tight cracks; they may enter bathrooms, basements, and kitchens.",
-    inspect:["Mulch beds","Door thresholds","Basement entries","Bathrooms","Exterior foundation","Potted plants"],
-    conditions:["Moist mulch","Leaf litter","Door gaps","Dense vegetation","Wet foundation"],
-    ipm:["Reduce mulch depth","Remove leaf litter","Improve drainage","Seal thresholds","Dry damp areas"],
-    treatment:["Exterior source/perimeter treatment may fit where label permits","Interior treatment is secondary to moisture/entry correction"],
-    follow:"Activity often tracks wet weather and mulch conditions."
-  },
-  "Silverfish":{
-    common:true, season:"Year-round indoors.",
-    why:"Silverfish favor humidity, paper/cardboard, stored items, bathrooms, attics, and wall voids.",
-    inspect:["Bathrooms","Attics","Closets","Books/paper storage","Baseboards","Laundry areas"],
-    conditions:["High humidity","Paper/cardboard","Clutter","Warm voids"],
-    ipm:["Reduce humidity","Remove cardboard clutter","Store paper items sealed","Seal cracks","Vacuum harborage"],
-    treatment:["Crack/crevice or dust-style treatment may fit where label permits","Humidity control and storage changes matter"],
-    follow:"Long-term reduction depends on lowering humidity and harborage."
-  },
-  "Fleas":{
-    common:true, season:"Warm months; year-round indoors with pets.",
-    why:"Fleas are usually tied to pets, wildlife, resting areas, crawlspaces, and shaded outdoor zones.",
-    inspect:["Pet bedding","Carpet edges","Furniture where pets rest","Crawlspace","Shaded yard/pet areas"],
-    conditions:["Untreated pets","Wildlife harborage","Carpet/upholstery","Pet bedding","Shaded humid areas"],
-    ipm:["Coordinate pet treatment with veterinarian-approved products","Wash pet bedding","Vacuum frequently and dispose debris","Exclude wildlife","Address crawlspace/yard sources"],
-    treatment:["Interior/yard treatment may fit where label permits and pet program is active","Follow-up may be needed due to life cycle"],
-    follow:"Expect delayed emergence; vacuuming and pet treatment are critical."
-  },
-  "Ticks":{
-    common:true, season:"Spring through fall.",
-    why:"Ticks are tied to tall grass, brush, leaf litter, wildlife, pets, and wooded edges.",
-    inspect:["Wood line","Tall grass","Pet runs","Leaf litter","Fence lines","Shaded brush"],
-    conditions:["Tall vegetation","Wildlife traffic","Leaf litter","Untreated pets"],
-    ipm:["Keep grass trimmed","Remove leaf litter","Create clear edge between lawn and woods","Discourage wildlife harborage","Use pet tick prevention through vet"],
-    treatment:["Targeted yard/edge treatment may fit where label permits","Focus on transition zones and pet/wildlife paths"],
-    follow:"Risk reduction combines habitat modification, pet protection, and monitoring."
-  },
-  "Mosquitoes":{
-    common:true, season:"Warm months.",
-    why:"Mosquitoes breed in standing water and rest in shaded vegetation. Container water around homes can produce repeated pressure.",
-    inspect:["Buckets","Tires","Gutters","Plant saucers","Tarps","Bird baths","Dense shrubs","Drainage areas"],
-    conditions:["Standing water","Clogged gutters","Dense shade vegetation","Containers holding water"],
-    ipm:["Dump standing water weekly","Clean gutters","Store containers upside down","Trim dense vegetation","Use screens and repair gaps"],
-    treatment:["Source reduction is first step","Larval control/stations or adult mosquito treatment may fit where label/device directions allow"],
-    follow:"New water sources can restart activity quickly after rain."
-  },
-  "Drain Flies":{
-    common:true, season:"Year-round indoors where drains are dirty.",
-    why:"Drain flies breed in organic slime in drains, plumbing, mop sinks, floor drains, or wet buildup.",
-    inspect:["Floor drains","Sink overflows","Mop sinks","Condensate lines","Drain pans","Broken/leaking plumbing"],
-    conditions:["Organic sludge","Standing water","Slow drains","Wet debris"],
-    ipm:["Clean drains mechanically","Remove organic buildup","Fix leaks","Dry wet areas","Use tape/monitoring to identify source drain"],
-    treatment:["Pesticide treatment alone rarely solves source","Drain sanitation/source removal is primary"],
-    follow:"Activity drops after breeding slime/source is removed."
-  },
-  "Fruit Flies":{
-    common:true, season:"Warm months; year-round indoors.",
-    why:"Fruit flies breed in fermenting organic material, produce, trash, drains, bottles/cans, and wet debris.",
-    inspect:["Fruit/produce","Trash cans","Recycling","Bar mats","Drain edges","Mop buckets"],
-    conditions:["Fermenting material","Dirty containers","Wet organic debris","Unsealed trash"],
-    ipm:["Remove overripe produce","Clean trash/recycling","Dry mop areas","Clean drains and spills","Store produce properly"],
-    treatment:["Traps can help monitor but source removal is primary","Chemical treatment alone is usually temporary"],
-    follow:"If breeding source remains, flies return quickly."
-  },
-  "Rodents / Mice":{
-    common:true, season:"Fall/winter pressure; year-round possible.",
-    why:"Mice enter for food, shelter, and warmth. Control depends on exclusion, sanitation, trapping/baiting strategy, and monitoring.",
-    inspect:["Garage corners","Kitchen baseboards","Utility penetrations","Crawlspace","Attic","Exterior foundation gaps","Droppings/gnaw marks"],
-    conditions:["Open gaps","Food access","Clutter","Pet food","Garage storage","Vegetation/debris near foundation"],
-    ipm:["Seal gaps after reducing pressure","Store food/pet food sealed","Remove clutter","Trim vegetation","Use snap traps/monitors in travel paths","Sanitize droppings safely"],
-    treatment:["Snap traps, stations, and bait programs may fit by site/label","Bait stations help protect bait placement; verify label and safety restrictions"],
-    follow:"Follow-up is important to check captures, bait activity, and new entry points."
-  },
-  "Rats":{
-    common:true, season:"Year-round; more common near sanitation/sewer/food sources.",
-    why:"Rats are tied to food, garbage, burrows, sewer/drain issues, and structural entry points.",
-    inspect:["Burrows","Trash areas","Crawlspace","Garage","Sewer/drain access","Pet food","Fence lines"],
-    conditions:["Garbage/food access","Openings","Burrows","Clutter","Water sources"],
-    ipm:["Secure trash","Remove food/water","Seal larger openings with durable materials","Reduce harborage","Use monitoring/traps carefully"],
-    treatment:["Exterior bait station program or trapping may fit by label/site","Avoid unsafe indoor bait placements; follow rodenticide label restrictions"],
-    follow:"Burrow/entry correction and sanitation drive long-term results."
-  }
+const options = {
+  pest: [
+    "General Ants",
+    "Carpenter Ants",
+    "Fire Ants",
+    "Cockroaches",
+    "Spiders",
+    "Wasps / Hornets",
+    "Mosquitoes",
+    "Bed Bugs",
+    "Termites",
+    "Rodents",
+    "Occasional Invaders"
+  ],
+  location: [
+    "Interior",
+    "Exterior",
+    "Interior + Exterior",
+    "Kitchen / Bath",
+    "Basement / Crawlspace",
+    "Yard / Lawn",
+    "Beds / Furniture",
+    "Structure / Foundation"
+  ],
+  frequency: [
+    "First Time",
+    "Occasional",
+    "Recurring",
+    "Heavy Activity",
+    "Follow-Up"
+  ],
+  severity: [
+    "Low",
+    "Moderate",
+    "High",
+    "Severe"
+  ]
 };
 
-const selected = { pest:null, location:null, frequency:null, severity:null };
+let selected = {
+  pest:null,
+  location:null,
+  frequency:null,
+  severity:null
+};
 
-function makeButtons(containerId, items, key){
-  const el = document.getElementById(containerId);
-  el.innerHTML = "";
-  items.forEach(item=>{
+function buildButtons(group, targetId){
+  const box = document.getElementById(targetId);
+  options[group].forEach(value=>{
     const btn = document.createElement("button");
-    btn.textContent = item;
-    btn.onclick = () => {
-      selected[key] = item;
-      [...el.children].forEach(b=>b.classList.remove("selected"));
+    btn.textContent = value;
+    btn.onclick = ()=>{
+      selected[group] = value;
+      [...box.children].forEach(b=>b.classList.remove("selected"));
       btn.classList.add("selected");
-      updateBadges();
     };
-    el.appendChild(btn);
+    box.appendChild(btn);
   });
 }
 
-function updateBadges(){
-  const badges = [];
-  if(selected.pest) badges.push(`<span class="badge">${selected.pest}</span>`);
-  if(selected.location) badges.push(`<span class="badge">${selected.location}</span>`);
-  if(selected.frequency) badges.push(`<span class="badge">${selected.frequency}</span>`);
-  if(selected.severity) badges.push(`<span class="badge">${selected.severity}</span>`);
-  document.getElementById("summaryBadges").innerHTML = badges.join("");
+buildButtons("pest","pestButtons");
+buildButtons("location","locationButtons");
+buildButtons("frequency","frequencyButtons");
+buildButtons("severity","severityButtons");
+
+const database = {
+  "General Ants": {
+    products: [
+      "Alpine WSG / dinotefuran for crack, crevice, and labeled indoor or exterior ant activity where a non-repellent transfer-style approach is preferred.",
+      "Ant bait such as fipronil, indoxacarb, spinosad, borax, or Niban-style bait when the label matches the ant species and site.",
+      "Taurus SC / fipronil for labeled exterior ant trails, entry points, and foundation activity.",
+      "CrossCheck Plus or other bifenthrin/pyrethroid only for exterior knockdown or barrier work when baiting is not being used in the same zone."
+    ],
+    why: "Ant colonies are usually better controlled by bait or non-repellent transfer products because workers carry toxicant back toward the colony. Spraying directly over bait zones can stop feeding and reduce bait success."
+  },
+  "Carpenter Ants": {
+    products: [
+      "Taurus SC / Termidor / fipronil on labeled exterior trails, foundation areas, and structural entry points.",
+      "Alpine WSG for labeled crack-and-crevice or spot work where ants are active.",
+      "Ant bait such as fipronil, indoxacarb, spinosad, borax, or Niban-style bait if feeding is confirmed.",
+      "Tri-Die / Tri-Dust only for labeled void treatments where the nest or travel void is confirmed."
+    ],
+    why: "Carpenter ants are tied to nesting sites, moisture, wood voids, tree contact, and trails. Non-repellent exterior treatment plus locating moisture/nest sources is stronger than simple contact spray."
+  },
+  "Fire Ants": {
+    products: [
+      "Fire ant bait containing indoxacarb, hydramethylnon, spinosad, or other label-approved fire ant active for broadcast or mound-based colony control.",
+      "Bifenthrin product such as CrossCheck Plus / Bifen XTS for labeled mound or perimeter contact activity.",
+      "Avoid relying on Niban unless the specific label lists the target fire ant use site."
+    ],
+    why: "Fire ant colonies are usually best handled with bait for colony impact, with mound/contact treatments used when immediate reduction is needed."
+  },
+  "Cockroaches": {
+    products: [
+      "Cockroach gel bait with fipronil, indoxacarb, hydramethylnon, or similar labeled active.",
+      "Gentrol IGR to reduce reproduction and help break the life cycle.",
+      "Alpine WSG for labeled crack-and-crevice, spot, or harborage work.",
+      "Boric acid / silica / diatomaceous style dust only in labeled voids and dry cracks, applied lightly."
+    ],
+    why: "Roaches hide in cracks, voids, kitchens, bathrooms, and warm appliance areas. Baits and IGRs reduce pesticide exposure while targeting the colony and reproduction."
+  },
+  "Spiders": {
+    products: [
+      "CrossCheck Plus / bifenthrin or another labeled pyrethroid for exterior eaves, foundation, harborage zones, and web-building areas.",
+      "Tri-Die / Tri-Dust for labeled voids, cracks, and inaccessible harborages.",
+      "Alpine WSG for labeled spot/crack work where a lighter non-repellent approach is desired."
+    ],
+    why: "Spider control depends heavily on web removal, egg sac removal, reducing insect prey, and treating exterior harborages. Sprays alone are weaker if webs, lighting, clutter, and prey remain."
+  },
+  "Wasps / Hornets": {
+    products: [
+      "Wasp and hornet aerosol for direct nest treatment when the nest is visible and label allows.",
+      "Tri-Die / Tri-Dust for labeled wall void, soffit, or hidden nest entries.",
+      "CrossCheck Plus / bifenthrin for labeled exterior residual around nesting or landing zones after the active nest is addressed."
+    ],
+    why: "Stinging insects require nest-focused treatment. Direct nest aerosols or labeled dusts are more appropriate than broad general spraying."
+  },
+  "Mosquitoes": {
+    products: [
+      "In2Care station with In2Mix packets for labeled mosquito station service.",
+      "Bifenthrin product such as CrossCheck Plus / Bifen XTS for labeled foliage, shaded resting areas, fence lines, and vegetation barrier treatments.",
+      "Bti larvicide dunks/briquettes for labeled standing water that cannot be dumped."
+    ],
+    why: "Mosquito work is strongest when breeding water is removed first, then larvae are targeted, then adult resting areas are treated."
+  },
+  "Bed Bugs": {
+    products: [
+      "CrossFire for labeled cracks, seams, bed frames, furniture joints, and harborage zones.",
+      "Silica gel / diatomaceous desiccant dust for labeled cracks, voids, and long-term dry harborages.",
+      "Use steam, vacuuming, encasements, monitoring, and follow-up inspections with chemical work."
+    ],
+    why: "Bed bugs hide deeply and resistance to some pyrethroids is documented. Multi-mode treatment, nonchemical work, and follow-up are usually needed."
+  },
+  "Termites": {
+    products: [
+      "Termidor SC / Termidor HE / Taurus SC / fipronil for labeled professional soil or structural termite work.",
+      "Trelona ATBS stations for labeled monitoring and baiting.",
+      "Do not treat without confirming termite type, site, label, licensing requirements, and structural treatment plan."
+    ],
+    why: "Subterranean termites usually require soil-applied termiticide barriers, bait systems, or professional structural treatment. Termiticide labels are strict and site-specific."
+  },
+  "Rodents": {
+    products: [
+      "Rodent bait stations with Final Bait Blox or other labeled bait secured in tamper-resistant stations.",
+      "T-Rex snap traps for quick reduction indoors or where bait is not ideal.",
+      "Sticky traps only where label/company policy allows and where non-target risk is controlled."
+    ],
+    why: "Rodent control is exclusion, sanitation, trapping, and secured baiting. Bait should stay inside tamper-resistant stations and away from children, pets, and non-target wildlife."
+  },
+  "Occasional Invaders": {
+    products: [
+      "Exterior bifenthrin/pyrethroid barrier treatment for labeled foundation, entry, door, window, and harborage zones.",
+      "Alpine WSG for labeled crack-and-crevice or spot treatment.",
+      "Vacuuming, sealing, moisture correction, and debris reduction before chemical work."
+    ],
+    why: "Occasional invaders are often moisture, entry-point, mulch, leaf litter, or weather driven. Exterior exclusion and perimeter work usually matter more than indoor spraying."
+  }
+};
+
+function locationAdvice(location){
+  if(location === "Interior"){
+    return "Interior focus: use crack-and-crevice, bait, dust, trapping, and harborage treatments. Avoid broad baseboard spraying unless the product label and situation justify it.";
+  }
+  if(location === "Exterior"){
+    return "Exterior focus: inspect entry points, trails, foundation, eaves, vegetation, moisture, mulch, trash areas, and nesting sites before applying.";
+  }
+  if(location === "Interior + Exterior"){
+    return "Interior + exterior focus: stop entry from outside while treating active indoor harborages with the lowest effective labeled method.";
+  }
+  if(location === "Kitchen / Bath"){
+    return "Kitchen/bath focus: prioritize sanitation, moisture correction, voids, appliances, plumbing penetrations, baits, and IGRs. Be careful around food-contact surfaces.";
+  }
+  if(location === "Basement / Crawlspace"){
+    return "Basement/crawlspace focus: check moisture, vents, sill plates, foundation cracks, insulation edges, spider webs, termite signs, rodent signs, and ant trails.";
+  }
+  if(location === "Yard / Lawn"){
+    return "Yard/lawn focus: inspect turf, mounds, shaded vegetation, standing water, fence lines, mulch beds, and pet/resting areas.";
+  }
+  if(location === "Beds / Furniture"){
+    return "Beds/furniture focus: inspect seams, tufts, frame joints, screw holes, cracks, baseboards, and nearby furniture before treating.";
+  }
+  if(location === "Structure / Foundation"){
+    return "Structure/foundation focus: inspect expansion joints, slab edges, weep holes, utility penetrations, siding gaps, moisture areas, and soil contact.";
+  }
+  return "";
 }
 
-function lineList(arr){
-  return arr.map(x => `• ${x}`).join("\\n");
+function frequencyAdvice(frequency){
+  if(frequency === "First Time") return "First-time issue: confirm identification before treating and start with inspection/IPM.";
+  if(frequency === "Occasional") return "Occasional issue: look for weather, moisture, sanitation, lighting, or entry-point triggers.";
+  if(frequency === "Recurring") return "Recurring issue: document conditions, rotate modes of action when appropriate, and correct the source instead of repeating the same spray only.";
+  if(frequency === "Heavy Activity") return "Heavy activity: combine inspection, source correction, targeted treatment, monitoring, and follow-up.";
+  if(frequency === "Follow-Up") return "Follow-up: compare activity to prior visit, check whether product placement was disturbed, and adjust based on monitoring.";
+  return "";
 }
 
-function intensityNote(){
-  if(selected.severity === "Heavy" || selected.frequency === "Heavy Activity"){
-    return "Because activity is heavy, prioritize source inspection, customer cooperation, and follow-up monitoring. Do not rely on a single visible-area treatment.";
-  }
-  if(selected.frequency === "Daily"){
-    return "Daily activity usually means an active source, entry point, breeding site, nest, or conducive condition is still present.";
-  }
-  if(selected.severity === "Light" || selected.frequency === "Occasional"){
-    return "Light or occasional activity may be handled with inspection, exclusion, sanitation, and targeted treatment only where justified.";
-  }
-  return "Moderate activity usually needs both source correction and targeted treatment/monitoring.";
+function severityAdvice(severity){
+  if(severity === "Low") return "Severity: low — targeted treatment and prevention should be enough.";
+  if(severity === "Moderate") return "Severity: moderate — treat active zones plus entry/source areas and recommend follow-up if activity continues.";
+  if(severity === "High") return "Severity: high — use a full IPM plan, product combination where labels allow, and schedule follow-up.";
+  if(severity === "Severe") return "Severity: severe — escalate to a structured treatment plan, manager review if needed, and clear customer prep/cooperation notes.";
+  return "";
 }
 
-function locationNote(){
-  const loc = selected.location || "";
-  if(["Kitchen","Restaurant/Commercial","Trash Area"].includes(loc)){
-    return "Food, grease, trash handling, and sanitation should be checked closely for this location.";
-  }
-  if(["Bathroom","Laundry","Basement","Crawlspace","Utility Room"].includes(loc)){
-    return "Moisture, plumbing, drains, and humidity should be checked closely for this location.";
-  }
-  if(["Exterior Foundation","Mulch Beds","Lawn","Trees","Deck","Porch","Siding","Eaves"].includes(loc)){
-    return "Exterior harborage, vegetation, gaps, nests, weather, lighting, and drainage should be checked closely for this location.";
-  }
-  if(["Attic","Garage"].includes(loc)){
-    return "Storage clutter, entry gaps, vents, droppings/webbing, and void access should be checked closely for this location.";
-  }
-  return "Inspect nearby entry points, food/water sources, and harborage.";
-}
-
-function generate(){
-  const out = document.getElementById("output");
-
+function generateRecommendation(){
   if(!selected.pest || !selected.location || !selected.frequency || !selected.severity){
-    out.textContent = "Select pest, location, frequency, and severity first.";
+    document.getElementById("output").textContent = "Select pest, location, frequency, and severity first.";
     return;
   }
 
-  const d = pestData[selected.pest];
-  if(!d){
-    out.textContent = "No database entry found for this pest yet.";
-    return;
-  }
+  const item = database[selected.pest];
 
-  const text =
-`PROBLEM SUMMARY
-Pest: ${selected.pest}
-Location: ${selected.location}
-Frequency: ${selected.frequency}
-Severity: ${selected.severity}
-East TN relevance: ${d.common ? "Common / relevant in this region" : "Possible, verify ID"}
-Typical season: ${d.season}
+  let text = "";
+  text += "Pest: " + selected.pest + "\n";
+  text += "Location: " + selected.location + "\n";
+  text += "Frequency: " + selected.frequency + "\n";
+  text += "Severity: " + selected.severity + "\n\n";
 
-WHY THEY MAY BE SEEING IT
-${d.why}
+  text += "Recommended products / actives:\n";
+  item.products.forEach((p,i)=> text += (i+1) + ". " + p + "\n");
 
-LOCATION / ACTIVITY NOTE
-${locationNote()}
-${intensityNote()}
+  text += "\nWhy these are recommended:\n" + item.why + "\n\n";
+  text += "Sequence recommendation:\n";
+  text += "1. Confirm pest ID and activity pattern.\n";
+  text += "2. Inspect and correct source conditions: food, water, moisture, clutter, entry points, harborage, standing water, or nesting areas.\n";
+  text += "3. Choose the lowest-risk labeled product that matches the pest, site, and goal.\n";
+  text += "4. Do not contaminate bait placements with repellent sprays.\n";
+  text += "5. Document products, target pest, treated areas, conditions, and follow-up needs.\n\n";
 
-INSPECTION POINTS
-${lineList(d.inspect)}
+  text += locationAdvice(selected.location) + "\n";
+  text += frequencyAdvice(selected.frequency) + "\n";
+  text += severityAdvice(selected.severity) + "\n\n";
 
-CONDUCIVE CONDITIONS
-${lineList(d.conditions)}
+  text += "Trusted source basis:\n";
+  text += "- EPA: label is law, registered pesticide use, IPM, bed bug pesticide classes, mosquito pyrethroid use, termite treatment categories.\n";
+  text += "- University Extension: ant baiting, carpenter ant baiting, roach IPM, spider/web removal, mosquito source reduction, occasional invader prevention.\n";
+  text += "- NPIC / Oregon State: active ingredient fact sheets for bifenthrin, fipronil, imidacloprid, cyfluthrin, pesticide safety, and label verification.\n\n";
 
-NON-CHEMICAL / IPM RECOMMENDATIONS
-${lineList(d.ipm)}
+  text += "Reminder: Do not use this as a rate sheet. Always verify the current product label before mixing or applying.";
 
-TREATMENT CONSIDERATIONS
-${lineList(d.treatment)}
-
-FOLLOW-UP EXPECTATION
-${d.follow}
-
-LABEL IS THE LAW
-Verify the current label before applying any pesticide. Confirm pest, site, rate, PPE, application method, restrictions, and re-entry. This app is a field organization tool, not a substitute for the product label.`;
-
-  out.textContent = text;
+  document.getElementById("output").textContent = text;
 }
 
-function copyResult(){
+function copyRecommendation(){
   const text = document.getElementById("output").textContent;
   navigator.clipboard.writeText(text).then(()=>{
-    alert("Copied recommendation.");
+    alert("Recommendation copied.");
   }).catch(()=>{
     alert("Copy failed. Tap and hold the text to copy manually.");
   });
 }
 
 function resetAll(){
-  selected.pest = null;
-  selected.location = null;
-  selected.frequency = null;
-  selected.severity = null;
+  selected = {pest:null,location:null,frequency:null,severity:null};
   document.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
   document.getElementById("output").textContent = "Select options above, then tap Generate Recommendation.";
-  updateBadges();
 }
-
-function init(){
-  makeButtons("pestButtons", Object.keys(pestData), "pest");
-  makeButtons("locationButtons", locations, "location");
-  makeButtons("frequencyButtons", frequencies, "frequency");
-  makeButtons("severityButtons", severities, "severity");
-  document.getElementById("productList").innerHTML = productsOnTruck.map(p=>`<span class="badge">${p}</span>`).join("");
-}
-init();
 </script>
+
 </body>
 </html>
